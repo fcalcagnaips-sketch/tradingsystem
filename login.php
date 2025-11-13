@@ -58,9 +58,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         /* Left Side - Background Image */
         .login-aside {
             flex: 1;
-            background-image: url('data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="100%25" height="100%25"%3E%3Cdefs%3E%3Cpattern id="pattern" x="0" y="0" width="100" height="100" patternUnits="userSpaceOnUse"%3E%3Cpath d="M30 30 L70 30 L70 70 L30 70 Z" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/%3E%3Cline x1="30" y1="30" x2="70" y2="70" stroke="rgba(255,255,255,0.02)" stroke-width="1"/%3E%3Cline x1="70" y1="30" x2="30" y2="70" stroke="rgba(255,255,255,0.02)" stroke-width="1"/%3E%3C/pattern%3E%3C/defs%3E%3Crect width="100%25" height="100%25" fill="%231e1e2d"/%3E%3Crect width="100%25" height="100%25" fill="url(%23pattern)"/%3E%3C/svg%3E');
+            background-image: url('./assets/js/media/bg-2.jpg');
             background-size: cover;
             background-position: center;
+            background-repeat: no-repeat;
             position: relative;
             display: none;
         }
