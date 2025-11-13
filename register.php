@@ -97,7 +97,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->bind_param("sssssss", $username, $firstName, $lastName, $email, $phone, $hashedPassword, $fullName);
                 
                 if ($stmt->execute()) {
+                    $userId = $conn->insert_id;
                     $stmt->close();
+                    
+                    // Assegna ruolo 'user' al nuovo utente
+                    require_once __DIR__ . '/includes/auth.php';
+                    assignRole($userId, 'user');
+                    
                     $conn->close();
                     
                     // Clear session

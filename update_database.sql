@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS otp_verifications (
     phone VARCHAR(50) NOT NULL COMMENT 'Telegram ID or Phone',
     otp_code VARCHAR(6) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    expires_at TIMESTAMP NOT NULL,
+    expires_at TIMESTAMP NULL,
     verified TINYINT(1) DEFAULT 0,
     attempts INT DEFAULT 0,
     INDEX idx_phone (phone),
