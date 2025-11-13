@@ -117,6 +117,22 @@ $user = getCurrentUser();
             font-size: 11px;
             transition: transform 0.2s;
         }
+        .menu-item.has-submenu.open .menu-arrow {
+            transform: rotate(90deg);
+        }
+        .submenu {
+            display: none;
+            padding-left: 20px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .submenu.open {
+            display: block;
+        }
+        .submenu .menu-item {
+            padding: 8px 15px;
+            font-size: 12px;
+        }
         /* Header Toolbar */
         .header-toolbar {
             position: fixed;
@@ -354,15 +370,40 @@ $user = getCurrentUser();
                     <i class="bi bi-speedometer2"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a href="#" class="menu-item has-submenu" data-toggle="submenu">
                     <i class="bi bi-graph-up-arrow"></i>
                     <span>Trading</span>
                     <i class="bi bi-chevron-right menu-arrow"></i>
                 </a>
-                <a href="#" class="menu-item">
+                <div class="submenu">
+                    <a href="#" class="menu-item">
+                        <i class="bi bi-dot"></i>
+                        <span>Live Trading</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="bi bi-dot"></i>
+                        <span>Auto Trading</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="bi bi-dot"></i>
+                        <span>Manual Orders</span>
+                    </a>
+                </div>
+                <a href="#" class="menu-item has-submenu" data-toggle="submenu">
                     <i class="bi bi-bar-chart-line"></i>
                     <span>Analytics</span>
+                    <i class="bi bi-chevron-right menu-arrow"></i>
                 </a>
+                <div class="submenu">
+                    <a href="#" class="menu-item">
+                        <i class="bi bi-dot"></i>
+                        <span>Performance</span>
+                    </a>
+                    <a href="#" class="menu-item">
+                        <i class="bi bi-dot"></i>
+                        <span>Risk Analysis</span>
+                    </a>
+                </div>
             </div>
             
             <div class="menu-section">
@@ -574,5 +615,58 @@ $user = getCurrentUser();
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Dynamic Sidebar Menu
+        document.addEventListener('DOMContentLoaded', function() {
+            // Handle submenu toggles
+            const menuItems = document.querySelectorAll('.menu-item[data-toggle="submenu"]');
+            
+            menuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const submenu = this.nextElementSibling;
+                    const isOpen = this.classList.contains('open');
+                    
+                    // Close all other submenus
+                    document.querySelectorAll('.menu-item.has-submenu').forEach(otherItem => {
+                        if (otherItem !== this) {
+                            otherItem.classList.remove('open');
+                            const otherSubmenu = otherItem.nextElementSibling;
+                            if (otherSubmenu && otherSubmenu.classList.contains('submenu')) {
+                                otherSubmenu.classList.remove('open');
+                            }
+                        }
+                    });
+                    
+                    // Toggle current submenu
+                    if (isOpen) {
+                        this.classList.remove('open');
+                        submenu.classList.remove('open');
+                    } else {
+                        this.classList.add('open');
+                        submenu.classList.add('open');
+                    }
+                });
+            });
+            
+            // Active menu highlighting
+            const currentPath = window.location.pathname;
+            document.querySelectorAll('.menu-item').forEach(item => {
+                if (item.getAttribute('href') === currentPath) {
+                    item.classList.add('active');
+                    // If it's in a submenu, open the parent
+                    const parentSubmenu = item.closest('.submenu');
+                    if (parentSubmenu) {
+                        parentSubmenu.classList.add('open');
+                        const parentMenuItem = parentSubmenu.previousElementSibling;
+                        if (parentMenuItem) {
+                            parentMenuItem.classList.add('open');
+                        }
+                    }
+                }
+            });
+        });
+    </script>
 </body>
 </html>
