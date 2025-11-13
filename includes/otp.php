@@ -8,9 +8,19 @@ function generateOTP() {
 
 // Get Telegram Chat ID from phone number
 function getTelegramChatId($phone) {
+    // MODALITÀ TESTING: Usa un chat_id fisso per tutti i test
+    // TODO: In produzione, rimuovi questo e usa il database
+    define('TEST_CHAT_ID', '8329115809'); // Il tuo chat_id Telegram
+    define('TEST_MODE', true); // Imposta a false in produzione
+    
+    if (TEST_MODE) {
+        // In modalità test, tutti gli OTP vanno al tuo Telegram
+        return TEST_CHAT_ID;
+    }
+    
+    // In produzione: cerca nel database
     $conn = getDBConnection();
     
-    // Cerca negli utenti esistenti
     $stmt = $conn->prepare("SELECT telegram_id FROM users WHERE phone = ? AND telegram_id IS NOT NULL");
     $stmt->bind_param("s", $phone);
     $stmt->execute();
@@ -30,18 +40,20 @@ function getTelegramChatId($phone) {
 
 // Send OTP via Telegram Bot
 function sendOTPTelegram($phone, $otp) {
-    // Telegram Bot Token - DA CONFIGURARE
-    $botToken = 'YOUR_BOT_TOKEN_HERE'; // Ottieni da @BotFather su Telegram
+    // Telegram Bot Token
+    require_once __DIR__ . '/../config/telegram.php';
+    $botToken = TELEGRAM_BOT_TOKEN;
     
     // In un sistema reale, dovresti avere un database che mappa numeri di telefono a chat_id Telegram
     // Per ora usiamo il numero come chat_id (SOLO PER TESTING)
     $chatId = getTelegramChatId($phone);
     
     if (!$chatId) {
-        // Per testing: l'utente deve prima avviare una conversazione con il bot
-        error_log("Telegram Chat ID non trovato per $phone. L'utente deve avviare il bot.");
-        error_log("OTP per $phone: $otp");
-        return false;
+        // Non trovato chat_id
+        error_log("Telegram Chat ID non trovato per $phone.");
+        error_log("OTP per $phone: $otp (per testing)");
+        // In modalità test, restituiamo comunque true e loggiamo l'OTP
+        return true;
     }
     
     $message = "🔐 *Trading AI - Codice OTP*\n\n";

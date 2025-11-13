@@ -66,196 +66,160 @@ $roles = [];
 while ($row = $result->fetch_assoc()) {
     $roles[] = $row;
 }
+
+// Page configuration
+$pageTitle = "Gestione Ruoli";
+include __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestione Ruoli - Trading AI</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f5f8fa;
-        }
-        .container-fluid {
-            padding: 30px;
-        }
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 0 28px 0 rgba(82, 63, 105, 0.05);
-            margin-bottom: 25px;
-        }
-        .card-header {
-            background: #ffffff;
-            border-bottom: 1px solid #eff2f5;
-            padding: 20px 25px;
-            border-radius: 12px 12px 0 0;
-        }
-        .card-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #181c32;
-            margin: 0;
-        }
-        .role-card {
-            border: 1px solid #eff2f5;
-            border-radius: 8px;
-            padding: 20px;
-            transition: all 0.2s;
-        }
-        .role-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-            transform: translateY(-2px);
-        }
-        .role-name {
-            font-size: 18px;
-            font-weight: 600;
-            color: #181c32;
-        }
-        .role-description {
-            color: #7e8299;
-            font-size: 14px;
-            margin: 10px 0;
-        }
-        .user-count {
-            display: inline-flex;
-            align-items: center;
-            padding: 5px 12px;
-            background: #f5f8fa;
-            border-radius: 4px;
-            font-size: 13px;
-            font-weight: 600;
-        }
-    </style>
-</head>
-<body>
-    <div class="container-fluid">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3 mb-0">Gestione Ruoli</h1>
-            <a href="dashboard.php" class="btn btn-light">
-                <i class="bi bi-arrow-left me-2"></i>Torna alla Dashboard
-            </a>
+
+<style>
+    .role-card {
+        border: 1px solid #eff2f5;
+        border-radius: 8px;
+        padding: 20px;
+        transition: all 0.2s;
+    }
+    .role-card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+    }
+    .role-name {
+        font-size: 18px;
+        font-weight: 600;
+        color: #181c32;
+    }
+    .role-description {
+        color: #7e8299;
+        font-size: 14px;
+        margin: 10px 0;
+    }
+    .user-count {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 12px;
+        background: #f5f8fa;
+        border-radius: 4px;
+        font-size: 13px;
+        font-weight: 600;
+    }
+</style>
+
+<div class="container-fluid">
+
+    <?php if ($success): ?>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="bi bi-check-circle me-2"></i><?php echo $success; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         </div>
+    <?php endif; ?>
 
-        <?php if ($success): ?>
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle me-2"></i><?php echo $success; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
+    <?php if ($error): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i><?php echo $error; ?>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    <?php endif; ?>
 
-        <?php if ($error): ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-triangle me-2"></i><?php echo $error; ?>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
-
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Ruoli Disponibili</h3>
-                    </div>
-                    <div class="card-body">
-                        <div class="row">
-                            <?php foreach ($roles as $role): ?>
-                            <div class="col-md-6 mb-3">
-                                <div class="role-card">
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                        <div class="role-name"><?php echo htmlspecialchars($role['display_name']); ?></div>
-                                        <?php if ($role['user_count'] == 0): ?>
-                                        <form method="POST" class="d-inline">
-                                            <input type="hidden" name="action" value="delete_role">
-                                            <input type="hidden" name="role_id" value="<?php echo $role['id']; ?>">
-                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Confermi eliminazione?')">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
-                                        <?php endif; ?>
-                                    </div>
-                                    <div class="role-description"><?php echo htmlspecialchars($role['description']); ?></div>
-                                    <div class="mt-3">
-                                        <span class="user-count">
-                                            <i class="bi bi-people me-2"></i>
-                                            <?php echo $role['user_count']; ?> utenti
-                                        </span>
-                                        <span class="badge bg-secondary ms-2"><?php echo $role['name']; ?></span>
-                                    </div>
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Ruoli Disponibili</h3>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <?php foreach ($roles as $role): ?>
+                        <div class="col-md-6 mb-3">
+                            <div class="role-card">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div class="role-name"><?php echo htmlspecialchars($role['display_name']); ?></div>
+                                    <?php if ($role['user_count'] == 0): ?>
+                                    <form method="POST" class="d-inline">
+                                        <input type="hidden" name="action" value="delete_role">
+                                        <input type="hidden" name="role_id" value="<?php echo $role['id']; ?>">
+                                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Confermi eliminazione?')">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="role-description"><?php echo htmlspecialchars($role['description']); ?></div>
+                                <div class="mt-3">
+                                    <span class="user-count">
+                                        <i class="bi bi-people me-2"></i>
+                                        <?php echo $role['user_count']; ?> utenti
+                                    </span>
+                                    <span class="badge bg-secondary ms-2"><?php echo $role['name']; ?></span>
                                 </div>
                             </div>
-                            <?php endforeach; ?>
                         </div>
+                        <?php endforeach; ?>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-md-4">
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Crea Nuovo Ruolo</h3>
-                    </div>
-                    <div class="card-body">
-                        <form method="POST">
-                            <input type="hidden" name="action" value="create_role">
-                            
-                            <div class="mb-3">
-                                <label class="form-label">Nome Tecnico *</label>
-                                <input type="text" name="name" class="form-control" required 
-                                       pattern="[a-z_]+" 
-                                       title="Solo lettere minuscole e underscore"
-                                       placeholder="es: super_user">
-                                <small class="text-muted">Solo lettere minuscole e underscore</small>
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Nome Visualizzato *</label>
-                                <input type="text" name="display_name" class="form-control" required
-                                       placeholder="es: Super Utente">
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label">Descrizione</label>
-                                <textarea name="description" class="form-control" rows="3"
-                                          placeholder="Descrivi i permessi e le responsabilità di questo ruolo..."></textarea>
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-plus-circle me-2"></i>Crea Ruolo
-                            </button>
-                        </form>
-                    </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Crea Nuovo Ruolo</h3>
                 </div>
+                <div class="card-body">
+                    <form method="POST">
+                        <input type="hidden" name="action" value="create_role">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Nome Tecnico *</label>
+                            <input type="text" name="name" class="form-control" required 
+                                   pattern="[a-z_]+" 
+                                   title="Solo lettere minuscole e underscore"
+                                   placeholder="es: super_user">
+                            <small class="text-muted">Solo lettere minuscole e underscore</small>
+                        </div>
 
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Info</h3>
-                    </div>
-                    <div class="card-body">
-                        <p class="small text-muted mb-2">
-                            <i class="bi bi-info-circle me-2"></i>
-                            I ruoli definiscono i permessi degli utenti nel sistema.
-                        </p>
-                        <p class="small text-muted mb-2">
-                            <i class="bi bi-shield-check me-2"></i>
-                            Un utente può avere più ruoli contemporaneamente.
-                        </p>
-                        <p class="small text-muted mb-0">
-                            <i class="bi bi-exclamation-triangle me-2"></i>
-                            Non puoi eliminare ruoli assegnati ad utenti.
-                        </p>
-                    </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nome Visualizzato *</label>
+                            <input type="text" name="display_name" class="form-control" required
+                                   placeholder="es: Super Utente">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Descrizione</label>
+                            <textarea name="description" class="form-control" rows="3"
+                                      placeholder="Descrivi i permessi e le responsabilità di questo ruolo..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle me-2"></i>Crea Ruolo
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Info</h3>
+                </div>
+                <div class="card-body">
+                    <p class="small text-muted mb-2">
+                        <i class="bi bi-info-circle me-2"></i>
+                        I ruoli definiscono i permessi degli utenti nel sistema.
+                    </p>
+                    <p class="small text-muted mb-2">
+                        <i class="bi bi-shield-check me-2"></i>
+                        Un utente può avere più ruoli contemporaneamente.
+                    </p>
+                    <p class="small text-muted mb-0">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Non puoi eliminare ruoli assegnati ad utenti.
+                    </p>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
-<?php $conn->close(); ?>
+<?php
+$conn->close();
+include __DIR__ . '/includes/footer.php';
+?>
