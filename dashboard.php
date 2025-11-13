@@ -14,242 +14,558 @@ $user = getCurrentUser();
     <title>Dashboard - Trading AI</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">    
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #F5F8FA;
+            background-color: #f5f8fa;
+            font-size: 13px;
+            font-weight: 400;
+            color: #252f4a;
         }
+        /* Sidebar Styles - Metronic 9 */
         .sidebar {
             position: fixed;
             top: 0;
             left: 0;
             bottom: 0;
             width: 265px;
-            background: #1E1E2D;
-            padding: 0;
+            background: #1e1e2d;
+            display: flex;
+            flex-direction: column;
             z-index: 1000;
+            box-shadow: 0 0 28px 0 rgba(82, 63, 105, 0.05);
         }
-        .sidebar-header {
-            padding: 20px;
-            text-align: center;
-            border-bottom: 1px solid #2B2B40;
+        .sidebar-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 80px;
+            padding: 0 25px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .sidebar-header h3 {
-            color: #fff;
-            font-size: 20px;
+        .sidebar-logo h3 {
+            color: #ffffff;
+            font-size: 22px;
             font-weight: 700;
+            letter-spacing: -0.5px;
             margin: 0;
         }
         .sidebar-menu {
-            padding: 20px 0;
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px 0;
+        }
+        .menu-section {
+            padding: 0 25px;
+            margin-bottom: 10px;
+        }
+        .menu-section-title {
+            color: #565674;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 10px 0;
+            margin-bottom: 5px;
         }
         .menu-item {
-            display: block;
-            padding: 12px 25px;
-            color: #7E8299;
+            display: flex;
+            align-items: center;
+            padding: 11px 15px;
+            color: #a1a5b7;
             text-decoration: none;
-            transition: all 0.3s;
-            font-size: 14px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            font-size: 13px;
             font-weight: 500;
+            margin-bottom: 2px;
+            position: relative;
         }
-        .menu-item:hover,
+        .menu-item:hover {
+            background: rgba(255, 255, 255, 0.06);
+            color: #ffffff;
+        }
         .menu-item.active {
-            background: #1B1B28;
-            color: #fff;
+            background: #1b1b28;
+            color: #009ef7;
+        }
+        .menu-item.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 24px;
+            background: #009ef7;
+            border-radius: 0 3px 3px 0;
         }
         .menu-item i {
+            font-size: 18px;
             margin-right: 12px;
-            font-size: 16px;
+            width: 20px;
+            text-align: center;
         }
-        .main-content {
-            margin-left: 265px;
-            padding: 0;
+        .menu-item .menu-arrow {
+            margin-left: auto;
+            font-size: 11px;
+            transition: transform 0.2s;
         }
-        .header {
-            background: #fff;
-            padding: 20px 30px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+        /* Header Toolbar */
+        .header-toolbar {
+            position: fixed;
+            top: 0;
+            left: 265px;
+            right: 0;
+            height: 80px;
+            background: #ffffff;
+            border-bottom: 1px solid #eff2f5;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            z-index: 95;
+            box-shadow: 0 0 28px 0 rgba(82, 63, 105, 0.05);
         }
-        .header h1 {
-            font-size: 24px;
+        .page-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .page-title h1 {
+            font-size: 18px;
             font-weight: 600;
-            color: #181C32;
+            color: #181c32;
             margin: 0;
         }
-        .user-menu {
+        .breadcrumb {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 12px;
+        }
+        .breadcrumb-item {
+            color: #a1a5b7;
+        }
+        .breadcrumb-item.active {
+            color: #181c32;
+            font-weight: 500;
+        }
+        .breadcrumb-separator {
+            color: #a1a5b7;
+        }
+        .toolbar-actions {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        .user-info {
-            text-align: right;
+        .user-panel {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            background: #f5f8fa;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .user-info .name {
-            font-weight: 600;
-            color: #181C32;
-            font-size: 14px;
+        .user-panel:hover {
+            background: #e4e6ef;
         }
-        .user-info .email {
-            font-size: 12px;
-            color: #7E8299;
-        }
-        .content-area {
-            padding: 30px;
-        }
-        .stats-card {
-            background: #fff;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-            margin-bottom: 20px;
-        }
-        .stats-card .icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 10px;
+        .user-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
-            margin-bottom: 15px;
-        }
-        .stats-card h3 {
-            font-size: 28px;
-            font-weight: 700;
-            color: #181C32;
-            margin-bottom: 5px;
-        }
-        .stats-card p {
-            color: #7E8299;
+            color: #fff;
+            font-weight: 600;
             font-size: 14px;
+        }
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+        .user-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: #181c32;
+            line-height: 1.2;
+        }
+        .user-role {
+            font-size: 11px;
+            color: #a1a5b7;
+        }
+        /* Main Content */
+        .main-content {
+            margin-left: 265px;
+            margin-top: 80px;
+            padding: 30px;
+            min-height: calc(100vh - 80px);
+        }
+        .content-container {
+            max-width: 100%;
+        }
+        /* Cards */
+        .card {
+            background: #ffffff;
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 0 28px 0 rgba(82, 63, 105, 0.05);
+            margin-bottom: 25px;
+        }
+        .card-header {
+            background: transparent;
+            border-bottom: 1px solid #eff2f5;
+            padding: 20px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #181c32;
             margin: 0;
         }
-        .btn-logout {
-            background: #F1416C;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+        .card-body {
+            padding: 25px;
+        }
+        /* Stats Widget */
+        .stats-widget {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .stats-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            flex-shrink: 0;
+        }
+        .stats-info {
+            flex: 1;
+        }
+        .stats-label {
+            font-size: 12px;
+            color: #a1a5b7;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        .stats-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #181c32;
+            line-height: 1;
+        }
+        .stats-change {
+            font-size: 12px;
             font-weight: 600;
+            margin-top: 8px;
+        }
+        .stats-change.positive {
+            color: #50cd89;
+        }
+        .stats-change.negative {
+            color: #f1416c;
+        }
+        /* Button Styles */
+        .btn {
             font-size: 13px;
-            transition: all 0.3s;
+            font-weight: 600;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.2s;
+            border: none;
         }
-        .btn-logout:hover {
-            background: #D9214E;
-            color: #fff;
+        .btn-primary {
+            background: #009ef7;
+            color: #ffffff;
         }
-        .bg-primary-light {
-            background: rgba(102, 126, 234, 0.1);
-            color: #667eea;
+        .btn-primary:hover {
+            background: #0095e8;
+            color: #ffffff;
         }
-        .bg-success-light {
+        .btn-danger {
+            background: #f1416c;
+            color: #ffffff;
+        }
+        .btn-danger:hover {
+            background: #d9214e;
+            color: #ffffff;
+        }
+        .btn-light {
+            background: #f5f8fa;
+            color: #7e8299;
+        }
+        .btn-light:hover {
+            background: #e4e6ef;
+            color: #5e6278;
+        }
+        /* Color Classes */
+        .bg-light-primary {
+            background: rgba(0, 158, 247, 0.1);
+            color: #009ef7;
+        }
+        .bg-light-success {
             background: rgba(80, 205, 137, 0.1);
-            color: #50CD89;
+            color: #50cd89;
         }
-        .bg-warning-light {
-            background: rgba(255, 184, 34, 0.1);
-            color: #FFB822;
+        .bg-light-warning {
+            background: rgba(255, 199, 0, 0.1);
+            color: #ffc700;
         }
-        .bg-danger-light {
+        .bg-light-danger {
             background: rgba(241, 65, 108, 0.1);
-            color: #F1416C;
+            color: #f1416c;
+        }
+        .bg-light-info {
+            background: rgba(124, 128, 248, 0.1);
+            color: #7c80f8;
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
+    <!-- Sidebar - Metronic 9 Style -->
     <div class="sidebar">
-        <div class="sidebar-header">
+        <div class="sidebar-logo">
             <h3>Trading AI</h3>
         </div>
+        
         <div class="sidebar-menu">
-            <a href="dashboard.php" class="menu-item active">
-                <i class="bi bi-grid-fill"></i>Dashboard
-            </a>
-            <a href="#" class="menu-item">
-                <i class="bi bi-graph-up"></i>Trading
-            </a>
-            <a href="#" class="menu-item">
-                <i class="bi bi-bar-chart-line"></i>Analytics
-            </a>
-            <a href="#" class="menu-item">
-                <i class="bi bi-wallet2"></i>Portfolio
-            </a>
-            <a href="#" class="menu-item">
-                <i class="bi bi-gear"></i>Settings
-            </a>
+            <div class="menu-section">
+                <div class="menu-section-title">Main</div>
+                <a href="dashboard.php" class="menu-item active">
+                    <i class="bi bi-speedometer2"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-graph-up-arrow"></i>
+                    <span>Trading</span>
+                    <i class="bi bi-chevron-right menu-arrow"></i>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-bar-chart-line"></i>
+                    <span>Analytics</span>
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Management</div>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-wallet2"></i>
+                    <span>Portfolio</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-clock-history"></i>
+                    <span>History</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-file-earmark-text"></i>
+                    <span>Reports</span>
+                </a>
+            </div>
+            
+            <div class="menu-section">
+                <div class="menu-section-title">Settings</div>
+                <a href="#" class="menu-item">
+                    <i class="bi bi-gear"></i>
+                    <span>Settings</span>
+                </a>
+                <a href="logout.php" class="menu-item">
+                    <i class="bi bi-box-arrow-right"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Toolbar -->
+    <div class="header-toolbar">
+        <div class="page-title">
+            <h1>Dashboard</h1>
+            <ul class="breadcrumb">
+                <li class="breadcrumb-item">Home</li>
+                <li class="breadcrumb-separator">/</li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ul>
+        </div>
+        
+        <div class="toolbar-actions">
+            <div class="user-panel">
+                <div class="user-avatar">
+                    <?php echo strtoupper(substr($user['full_name'], 0, 1)); ?>
+                </div>
+                <div class="user-details">
+                    <div class="user-name"><?php echo htmlspecialchars($user['full_name']); ?></div>
+                    <div class="user-role">Administrator</div>
+                </div>
+            </div>
         </div>
     </div>
 
     <!-- Main Content -->
     <div class="main-content">
-        <!-- Header -->
-        <div class="header">
-            <h1>Dashboard</h1>
-            <div class="user-menu">
-                <div class="user-info">
-                    <div class="name"><?php echo htmlspecialchars($user['full_name']); ?></div>
-                    <div class="email"><?php echo htmlspecialchars($user['email']); ?></div>
+        <div class="content-container">
+            <!-- Stats Widgets Row -->
+            <div class="row g-4 mb-4">
+                <div class="col-xl-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stats-widget">
+                                <div class="stats-icon bg-light-primary">
+                                    <i class="bi bi-graph-up"></i>
+                                </div>
+                                <div class="stats-info">
+                                    <div class="stats-label">Total Balance</div>
+                                    <div class="stats-value">$45,820</div>
+                                    <div class="stats-change positive">
+                                        <i class="bi bi-arrow-up"></i> 8.5% from last month
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <a href="logout.php" class="btn btn-logout">
-                    <i class="bi bi-box-arrow-right"></i> Logout
-                </a>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stats-widget">
+                                <div class="stats-icon bg-light-success">
+                                    <i class="bi bi-trophy"></i>
+                                </div>
+                                <div class="stats-info">
+                                    <div class="stats-label">Today's Profit</div>
+                                    <div class="stats-value">+12.5%</div>
+                                    <div class="stats-change positive">
+                                        <i class="bi bi-arrow-up"></i> $2,456 profit
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stats-widget">
+                                <div class="stats-icon bg-light-warning">
+                                    <i class="bi bi-activity"></i>
+                                </div>
+                                <div class="stats-info">
+                                    <div class="stats-label">Active Trades</div>
+                                    <div class="stats-value">24</div>
+                                    <div class="stats-change positive">
+                                        <i class="bi bi-arrow-up"></i> 4 new today
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-xl-3 col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="stats-widget">
+                                <div class="stats-icon bg-light-danger">
+                                    <i class="bi bi-percent"></i>
+                                </div>
+                                <div class="stats-info">
+                                    <div class="stats-label">Success Rate</div>
+                                    <div class="stats-value">89%</div>
+                                    <div class="stats-change positive">
+                                        <i class="bi bi-arrow-up"></i> 3% improvement
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
 
-        <!-- Content Area -->
-        <div class="content-area">
+            <!-- Welcome Card -->
             <div class="row">
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <div class="icon bg-primary-light">
-                            <i class="bi bi-graph-up"></i>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Welcome to Trading AI</h3>
                         </div>
-                        <h3>$45,820</h3>
-                        <p>Total Balance</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <div class="icon bg-success-light">
-                            <i class="bi bi-arrow-up-circle"></i>
+                        <div class="card-body">
+                            <p class="mb-3">Hello <strong><?php echo htmlspecialchars($user['username']); ?></strong>, welcome back to your trading dashboard!</p>
+                            <div class="alert alert-primary d-flex align-items-center mb-0" role="alert">
+                                <i class="bi bi-info-circle-fill me-3" style="font-size: 20px;"></i>
+                                <div>
+                                    <strong>System Status:</strong> All systems operational. Real-time data streaming is active and all trading algorithms are running smoothly.
+                                </div>
+                            </div>
                         </div>
-                        <h3>+12.5%</h3>
-                        <p>Today's Profit</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <div class="icon bg-warning-light">
-                            <i class="bi bi-activity"></i>
-                        </div>
-                        <h3>24</h3>
-                        <p>Active Trades</p>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="stats-card">
-                        <div class="icon bg-danger-light">
-                            <i class="bi bi-trophy"></i>
-                        </div>
-                        <h3>89%</h3>
-                        <p>Success Rate</p>
                     </div>
                 </div>
             </div>
-
+            
+            <!-- Additional Info Row -->
             <div class="row mt-4">
-                <div class="col-md-12">
-                    <div class="stats-card">
-                        <h4 class="mb-4">Welcome to Trading AI Dashboard</h4>
-                        <p class="mb-3">You are logged in as <strong><?php echo htmlspecialchars($user['username']); ?></strong></p>
-                        <div class="alert alert-info">
-                            <i class="bi bi-info-circle me-2"></i>
-                            <strong>System Status:</strong> All systems operational. Real-time data streaming active.
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                        </div>
+                        <div class="card-body">
+                            <p class="text-muted mb-0">Your recent trading activity will appear here.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Quick Stats</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted">Win Rate</span>
+                                    <span class="fw-bold">89%</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: 89%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted">Portfolio Growth</span>
+                                    <span class="fw-bold">76%</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-primary" role="progressbar" style="width: 76%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="text-muted">Risk Level</span>
+                                    <span class="fw-bold">34%</span>
+                                </div>
+                                <div class="progress" style="height: 6px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 34%"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
