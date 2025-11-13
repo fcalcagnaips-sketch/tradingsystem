@@ -40,14 +40,22 @@ $user = getCurrentUser();
             flex-direction: column;
             z-index: 1000;
             box-shadow: 0 0 28px 0 rgba(82, 63, 105, 0.05);
+            transition: width 0.3s ease;
+        }
+        .sidebar.collapsed {
+            width: 75px;
         }
         .sidebar-logo {
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             height: 80px;
             padding: 0 25px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .sidebar.collapsed .sidebar-logo {
+            justify-content: center;
+            padding: 0 15px;
         }
         .sidebar-logo h3 {
             color: #ffffff;
@@ -55,6 +63,31 @@ $user = getCurrentUser();
             font-weight: 700;
             letter-spacing: -0.5px;
             margin: 0;
+            white-space: nowrap;
+            transition: opacity 0.2s;
+        }
+        .sidebar.collapsed .sidebar-logo h3 {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        .sidebar-toggle {
+            background: transparent;
+            border: none;
+            color: #a1a5b7;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 5px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sidebar-toggle:hover {
+            color: #ffffff;
+        }
+        .sidebar.collapsed .sidebar-toggle {
+            margin: 0 auto;
         }
         .sidebar-menu {
             flex: 1;
@@ -73,6 +106,14 @@ $user = getCurrentUser();
             letter-spacing: 0.5px;
             padding: 10px 0;
             margin-bottom: 5px;
+            transition: opacity 0.2s;
+        }
+        .sidebar.collapsed .menu-section-title {
+            opacity: 0;
+            height: 0;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
         }
         .menu-item {
             display: flex;
@@ -111,6 +152,19 @@ $user = getCurrentUser();
             margin-right: 12px;
             width: 20px;
             text-align: center;
+            flex-shrink: 0;
+        }
+        .sidebar.collapsed .menu-item {
+            justify-content: center;
+            padding: 11px 5px;
+        }
+        .sidebar.collapsed .menu-item span {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
+        }
+        .sidebar.collapsed .menu-item i {
+            margin-right: 0;
         }
         .menu-item .menu-arrow {
             margin-left: auto;
@@ -119,6 +173,11 @@ $user = getCurrentUser();
         }
         .menu-item.has-submenu.open .menu-arrow {
             transform: rotate(90deg);
+        }
+        .sidebar.collapsed .menu-arrow {
+            opacity: 0;
+            width: 0;
+            overflow: hidden;
         }
         .submenu {
             display: none;
@@ -132,6 +191,9 @@ $user = getCurrentUser();
         .submenu .menu-item {
             padding: 8px 15px;
             font-size: 12px;
+        }
+        .sidebar.collapsed .submenu {
+            display: none !important;
         }
         /* Header Toolbar */
         .header-toolbar {
@@ -148,6 +210,10 @@ $user = getCurrentUser();
             padding: 0 30px;
             z-index: 95;
             box-shadow: 0 0 28px 0 rgba(82, 63, 105, 0.05);
+            transition: left 0.3s ease;
+        }
+        .sidebar.collapsed ~ .header-toolbar {
+            left: 75px;
         }
         .page-title {
             display: flex;
@@ -229,6 +295,10 @@ $user = getCurrentUser();
             margin-top: 80px;
             padding: 30px;
             min-height: calc(100vh - 80px);
+            transition: margin-left 0.3s ease;
+        }
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 75px;
         }
         .content-container {
             max-width: 100%;
@@ -358,9 +428,12 @@ $user = getCurrentUser();
 </head>
 <body>
     <!-- Sidebar - Metronic 9 Style -->
-    <div class="sidebar">
+    <div class="sidebar" id="sidebar">
         <div class="sidebar-logo">
             <h3>Trading AI</h3>
+            <button class="sidebar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+                <i class="bi bi-list"></i>
+            </button>
         </div>
         
         <div class="sidebar-menu">
@@ -618,6 +691,24 @@ $user = getCurrentUser();
     <script>
         // Dynamic Sidebar Menu
         document.addEventListener('DOMContentLoaded', function() {
+            // Sidebar toggle functionality
+            const sidebar = document.getElementById('sidebar');
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            
+            // Load saved state
+            const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+            if (isCollapsed) {
+                sidebar.classList.add('collapsed');
+            }
+            
+            sidebarToggle.addEventListener('click', function(e) {
+                e.stopPropagation();
+                sidebar.classList.toggle('collapsed');
+                
+                // Save state
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+            });
+            
             // Handle submenu toggles
             const menuItems = document.querySelectorAll('.menu-item[data-toggle="submenu"]');
             
