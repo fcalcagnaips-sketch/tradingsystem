@@ -15,10 +15,10 @@ define('GMAIL_SMTP_PORT', 587);
 define('GMAIL_SMTP_ENCRYPTION', 'tls');
 
 // Il tuo account Gmail
-define('GMAIL_USERNAME', 'your-email@gmail.com');
-define('GMAIL_PASSWORD', 'your-app-password-here'); // App Password Gmail (16 caratteri)
+define('GMAIL_USERNAME', 'f.calcagna.ips@gmail.com');
+define('GMAIL_PASSWORD', 'vevaheuqwwwbrorc'); // App Password Gmail (16 caratteri)
 
 // Email mittente
-define('GMAIL_FROM_EMAIL', 'your-email@gmail.com');
+define('GMAIL_FROM_EMAIL', 'f.calcagna.ips@gmail.com');
 define('GMAIL_FROM_NAME', 'Trading AI');
 ?>
