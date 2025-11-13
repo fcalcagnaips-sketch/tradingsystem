@@ -497,9 +497,19 @@ $user = getCurrentUser();
             
             <div class="menu-section">
                 <div class="menu-section-title">Settings</div>
+                <?php if ($user['is_admin']): ?>
+                <a href="users.php" class="menu-item">
+                    <i class="bi bi-people"></i>
+                    <span>Gestione Utenti</span>
+                </a>
+                <a href="roles.php" class="menu-item">
+                    <i class="bi bi-shield-check"></i>
+                    <span>Gestione Ruoli</span>
+                </a>
+                <?php endif; ?>
                 <a href="#" class="menu-item">
                     <i class="bi bi-gear"></i>
-                    <span>Settings</span>
+                    <span>Impostazioni</span>
                 </a>
                 <a href="logout.php" class="menu-item">
                     <i class="bi bi-box-arrow-right"></i>

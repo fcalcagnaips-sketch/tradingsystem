@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Trading AI - Sign In</title>
+    <title>Trading AI</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700|Roboto:300,400,500,600,700" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -189,7 +189,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="kt-login-body">
                         <div class="kt-login-form">
                             <div class="kt-login-title">
-                                <h3>Trading AI, Sign In</h3>
+                                <h3>Sign In</h3>
                             </div>
 
                             <?php if (!empty($error)): ?>
