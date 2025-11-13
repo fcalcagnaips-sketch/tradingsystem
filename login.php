@@ -230,7 +230,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </form>
 
                             <div class="login-footer">
-                                <p class="mb-0">Default credentials: <strong>admin</strong> / <strong>admin123</strong></p>
+                                <p class="mb-0">Non hai un account? <a href="register.php" style="color: #5d78ff; text-decoration: none; font-weight: 600;">Registrati</a></p>
+                                <p class="mb-0 mt-2" style="font-size: 12px;">Default credentials: <strong>admin</strong> / <strong>admin123</strong></p>
                             </div>
                         </div>
                     </div>
